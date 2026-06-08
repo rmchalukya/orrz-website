@@ -25,6 +25,9 @@ export const SITE = {
   social: {
     linkedin: "https://www.linkedin.com/company/orrizonte-technologies",
   },
+  // Paste the token from Google Search Console → "HTML tag" verification
+  // (just the content value, not the whole tag). Leave empty until then.
+  googleSiteVerification: "",
 };
 
 export const NAV = [
