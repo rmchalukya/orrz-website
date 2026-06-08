@@ -14,8 +14,11 @@ const SERVICE_OPTIONS = [
   "Something else",
 ];
 
+type Status = "idle" | "sending" | "sent" | "error";
+
 export function ContactForm() {
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<Status>("idle");
+  const [errorMsg, setErrorMsg] = useState("");
   const [message, setMessage] = useState("");
 
   // Prefill the message from the hero prompt's ?q= parameter.
@@ -24,22 +27,37 @@ export function ContactForm() {
     if (q) setMessage(q);
   }, []);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
     const data = new FormData(form);
-    const name = String(data.get("name") || "");
-    const company = String(data.get("company") || "");
-    const interest = String(data.get("interest") || "");
-    const message = String(data.get("message") || "");
-    const email = String(data.get("email") || "");
+    const payload = {
+      name: String(data.get("name") || ""),
+      email: String(data.get("email") || ""),
+      company: String(data.get("company") || ""),
+      interest: String(data.get("interest") || ""),
+      message: String(data.get("message") || ""),
+    };
 
-    const subject = encodeURIComponent(`Enquiry from ${name}${company ? ` (${company})` : ""}`);
-    const body = encodeURIComponent(
-      `Name: ${name}\nEmail: ${email}\nCompany: ${company}\nInterest: ${interest}\n\n${message}`
-    );
-    window.location.href = `mailto:${SITE.email}?subject=${subject}&body=${body}`;
-    setSubmitted(true);
+    setStatus("sending");
+    setErrorMsg("");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const { error } = await res.json().catch(() => ({ error: "" }));
+        throw new Error(error || "Failed to send.");
+      }
+      setStatus("sent");
+      form.reset();
+      setMessage("");
+    } catch (err) {
+      setStatus("error");
+      setErrorMsg(err instanceof Error ? err.message : "Failed to send.");
+    }
   }
 
   const field =
@@ -96,14 +114,25 @@ export function ContactForm() {
         />
       </div>
 
-      <button type="submit" className="btn-primary w-full sm:w-auto">
-        Send enquiry
+      <button
+        type="submit"
+        disabled={status === "sending"}
+        className="btn-primary w-full disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+      >
+        {status === "sending" ? "Sending…" : "Send enquiry"}
       </button>
 
-      {submitted && (
-        <p className="text-sm text-ink-muted">
-          Your email client should have opened. If not, write to us directly at{" "}
-          <a href={`mailto:${SITE.email}`} className="font-semibold text-orange-600">
+      {status === "sent" && (
+        <p className="rounded-lg bg-orange-50 px-4 py-3 text-sm text-ink-soft">
+          Thanks — your message is on its way. A senior member of our team will get back to you
+          within one business day.
+        </p>
+      )}
+
+      {status === "error" && (
+        <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+          {errorMsg || "Something went wrong."} You can also email us directly at{" "}
+          <a href={`mailto:${SITE.email}`} className="font-semibold underline">
             {SITE.email}
           </a>
           .
