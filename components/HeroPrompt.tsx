@@ -1,7 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ContactModal } from "./ContactModal";
 
 const SUGGESTIONS = [
   "Adopt AI the right way",
@@ -11,12 +11,13 @@ const SUGGESTIONS = [
 ];
 
 export function HeroPrompt() {
-  const router = useRouter();
   const [q, setQ] = useState("");
+  const [open, setOpen] = useState(false);
+  const [draft, setDraft] = useState("");
 
   function go(text?: string) {
-    const v = (text ?? q).trim();
-    router.push(`/contact${v ? `?q=${encodeURIComponent(v)}` : ""}`);
+    setDraft((text ?? q).trim());
+    setOpen(true);
   }
 
   return (
@@ -59,6 +60,8 @@ export function HeroPrompt() {
           </button>
         ))}
       </div>
+
+      <ContactModal open={open} onClose={() => setOpen(false)} initialMessage={draft} />
     </div>
   );
 }

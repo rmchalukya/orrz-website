@@ -16,16 +16,17 @@ const SERVICE_OPTIONS = [
 
 type Status = "idle" | "sending" | "sent" | "error";
 
-export function ContactForm() {
+export function ContactForm({ initialMessage }: { initialMessage?: string }) {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(initialMessage ?? "");
 
-  // Prefill the message from the hero prompt's ?q= parameter.
+  // Fallback: prefill the message from the ?q= parameter on the /contact page.
   useEffect(() => {
+    if (initialMessage) return;
     const q = new URLSearchParams(window.location.search).get("q");
     if (q) setMessage(q);
-  }, []);
+  }, [initialMessage]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();

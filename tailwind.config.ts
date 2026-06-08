@@ -53,12 +53,22 @@ const config: Config = {
         shine: {
           to: { backgroundPosition: "200% center" },
         },
+        "pop-in": {
+          "0%": { opacity: "0", transform: "translateY(14px) scale(0.96)" },
+          "100%": { opacity: "1", transform: "translateY(0) scale(1)" },
+        },
+        "overlay-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
       },
       animation: {
         "fade-up": "fade-up 0.6s ease-out both",
         float: "float 9s ease-in-out infinite",
         "float-alt": "float-alt 12s ease-in-out infinite",
         shine: "shine 6s linear infinite",
+        "pop-in": "pop-in 0.3s cubic-bezier(0.22,1,0.36,1) both",
+        "overlay-in": "overlay-in 0.2s ease-out both",
       },
     },
   },
