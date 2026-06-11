@@ -23,7 +23,8 @@ export const SITE = {
   locations: ["Bengaluru", "Mumbai", "NCR (Noida / Delhi)"],
   teamSize: "44+",
   social: {
-    linkedin: "https://www.linkedin.com/company/orrizonte-technologies",
+    linkedin: "https://in.linkedin.com/company/orrizonte",
+    instagram: "https://www.instagram.com/orrizontetechhub/",
   },
   // Paste the token from Google Search Console → "HTML tag" verification
   // (just the content value, not the whole tag). Leave empty until then.

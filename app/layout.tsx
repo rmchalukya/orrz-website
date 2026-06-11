@@ -68,7 +68,7 @@ const orgJsonLd = {
     "@type": "PostalAddress",
     addressCountry: "IN",
   },
-  sameAs: [SITE.social.linkedin],
+  sameAs: [SITE.social.linkedin, SITE.social.instagram],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
